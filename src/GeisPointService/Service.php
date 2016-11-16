@@ -266,39 +266,22 @@ class Service implements ServiceInterface
 	}
 
 	/**
-	 * Performs search for Geis Points. At least one parameter MUST be passed.
+	 * Performs search for Geis Points. If all parameters are empty,
+     * all Geis Points be returned.
 	 *
 	 * @param string $zip
 	 * @param string $city
 	 * @param string $gpid
 	 * @return array
-	 * @throws \InvalidArgumentException
 	 * @todo Also this method should be cached!
 	 */
-	public function searchPoints($zip, $city, $gpid)
+	public function searchPoints($zip = null, $city = null, $gpid = null)
 	{
-		$arguments = array();
-
-		if (!empty($zip)) {
-			$arguments['zip'] = $zip;
-		}
-
-		if (!empty($city)) {
-			$arguments['city'] = $city;
-		}
-
-		if (!empty($gpid)) {
-			$arguments['id_gp'] = $gpid;
-		}
-
-		if (count($arguments) === 0) {
-			throw new \InvalidArgumentException();
-		}
-
-		$arguments = array_merge(
-			array('zip' => '', 'city' => '', 'id_gp' => ''),
-			$arguments
-		);
+		$arguments = array(
+            'zip'   => (string)$zip,
+            'city'  => (string)$city,
+            'id_gp' => (string)$gpid,
+        );
 
 		$json = $this->client->__soapCall('searchGP', $arguments);
 		$data = json_decode($json);
